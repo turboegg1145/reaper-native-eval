@@ -4,6 +4,12 @@
 # No Wine, no Python evaluation harness, no Lua helper library.
 FROM ubuntu:24.04
 
+LABEL org.opencontainers.image.title="reaper-native-eval" \
+      org.opencontainers.image.description="Headless native-Linux REAPER Docker sandbox for evaluating model-written ReaScript" \
+      org.opencontainers.image.source="https://github.com/turboegg1145/reaper-native-eval" \
+      org.opencontainers.image.url="https://github.com/turboegg1145/reaper-native-eval" \
+      org.opencontainers.image.licenses="NOASSERTION"
+
 ARG DEBIAN_FRONTEND=noninteractive
 ARG REAPER_TARBALL=reaper785_linux_x86_64.tar.xz
 ARG REAPER_SHA256=b962c40a51535d2faf9796f56270f9e331c9d424b5741472277d7bfd6c4893ac
