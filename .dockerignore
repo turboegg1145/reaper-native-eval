@@ -1,0 +1,5 @@
+workspace/
+*.wav
+*.rpp
+*.log
+.git/
