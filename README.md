@@ -13,13 +13,27 @@ no Python harness, no Lua wrapper library, no Wine, and no plugin bridge.
 
 ## Quick start
 
-```bash
-# 1. Build the image. The build also warms REAPER's VST3/CLAP scan cache.
-./build.sh
+Use the public prebuilt image (recommended), or build locally.
 
-# 2. Run the full-chain smoke test (Surge XT + ReaEQ + MIDI chords).
+```bash
+# 1a. Pull the public x86_64 image.
+docker pull ghcr.io/turboegg1145/reaper-native-eval:7.85
+
+# 2a. Run the full-chain smoke test against the pulled image.
+REAPER_IMAGE=ghcr.io/turboegg1145/reaper-native-eval:7.85 ./run_test.sh
+```
+
+Or build from source (the build also warms REAPER's VST3/CLAP scan cache):
+
+```bash
+./build.sh
 ./run_test.sh
 ```
+
+The GHCR package (`ghcr.io/turboegg1145/reaper-native-eval`) is public;
+anonymous pulls are verified with an empty Docker config. The image includes REAPER,
+Surge XT, and Dragonfly Reverb. REAPER itself remains proprietary; this image is
+intended for evaluation and testing, subject to the upstream licenses.
 
 Expected artifacts:
 
@@ -39,7 +53,8 @@ normally completes in about 3 seconds and produces an audible 8-second file
 ```
 
 `run.sh` copies the script to `workspace/agent_song.lua`, starts the container,
-and validates that `output.wav` and `output.rpp` exist. On a Lua failure it
+and validates that `output.wav` and `output.rpp` exist. Set `REAPER_IMAGE` to
+run a pulled image without retagging it; the default is `reaper-native-eval:7.85`. On a Lua failure it
 prints the error and exits 1; the full error is also in `workspace/error.log`.
 A hard wall-clock limit (default 300 s) kills a script stuck in a modal API or
 an infinite loop; override it with `REAPER_TIMEOUT_SECS=...`.
@@ -136,7 +151,7 @@ Runtime containers use the cache and do not rescan the plugins.
 
 ```text
 --network none --init --pids-limit 512 --memory 4g --shm-size 512m
---cap-drop ALL -v "$PWD/workspace:/workspace"
+--cap-drop ALL -v "$PWD/workspace:/workspace" "$REAPER_IMAGE"
 ```
 
 The Docker command is wrapped in `timeout --signal=TERM --kill-after=10s`

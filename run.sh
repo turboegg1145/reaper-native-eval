@@ -18,6 +18,7 @@ fi
 chmod 0644 workspace/agent_song.lua
 rm -f workspace/output.rpp workspace/output.wav workspace/error.log
 
+IMAGE="${REAPER_IMAGE:-reaper-native-eval:7.85}"
 TIMEOUT_SECS="${REAPER_TIMEOUT_SECS:-300}"
 if [[ ! "$TIMEOUT_SECS" =~ ^[0-9]+$ ]] || [[ "$TIMEOUT_SECS" -lt 1 ]]; then
     echo "REAPER_TIMEOUT_SECS must be a positive integer" >&2
@@ -41,7 +42,7 @@ timeout --signal=TERM --kill-after=10s "${TIMEOUT_SECS}s" \
     --shm-size 512m \
     --cap-drop ALL \
     -v "$PWD/workspace:/workspace" \
-    reaper-native-eval:7.85
+    "$IMAGE"
 rc=$?
 set -e
 
